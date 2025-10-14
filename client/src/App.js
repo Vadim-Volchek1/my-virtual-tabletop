@@ -1,24 +1,47 @@
-import logo from './logo.svg';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { ChakraProvider } from '@chakra-ui/react';
+import { AuthProvider } from './contexts/AuthContext';
+import Login from './components/Login';
+import Dashboard from './components/Dashboard';
+import GameTable from './components/GameTable';
+import SessionDetails from './components/SessionDetails';
+import PublicRoute from './components/PublicRoute'; // default import
+import ProtectedRoute from './components/ProtectedRoute'; // default import
 import './App.css';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ChakraProvider>
+      <AuthProvider>
+        <Router>
+          <div className="App">
+            <Routes>
+              <Route path="/login" element={
+                <PublicRoute>
+                  <Login />
+                </PublicRoute>
+              } />
+              <Route path="/" element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              } />
+              <Route path="/session/:id" element={
+                <ProtectedRoute>
+                  <GameTable />
+                </ProtectedRoute>
+              } />
+              <Route path="/session/:id/details" element={
+                <ProtectedRoute>
+                  <SessionDetails />
+                </ProtectedRoute>
+              } />
+            </Routes>
+          </div>
+        </Router>
+      </AuthProvider>
+    </ChakraProvider>
   );
 }
 
