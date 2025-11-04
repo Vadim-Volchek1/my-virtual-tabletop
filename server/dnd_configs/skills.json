@@ -1,0 +1,74 @@
+{
+  "Acrobatics": {
+    "ability": "dexterity",
+    "description": "Ловкость тела, акробатика"
+  },
+  "Animal Handling": {
+    "ability": "wisdom",
+    "description": "Уход за животными"
+  },
+  "Arcana": {
+    "ability": "intelligence",
+    "description": "Магические знания"
+  },
+  "Athletics": {
+    "ability": "strength",
+    "description": "Физическая сила"
+  },
+  "Deception": {
+    "ability": "charisma",
+    "description": "Обман"
+  },
+  "History": {
+    "ability": "intelligence",
+    "description": "Исторические знания"
+  },
+  "Insight": {
+    "ability": "wisdom",
+    "description": "Проницательность"
+  },
+  "Intimidation": {
+    "ability": "charisma",
+    "description": "Запугивание"
+  },
+  "Investigation": {
+    "ability": "intelligence",
+    "description": "Расследование"
+  },
+  "Medicine": {
+    "ability": "wisdom",
+    "description": "Медицина"
+  },
+  "Nature": {
+    "ability": "intelligence",
+    "description": "Природа"
+  },
+  "Perception": {
+    "ability": "wisdom",
+    "description": "Внимательность"
+  },
+  "Performance": {
+    "ability": "charisma",
+    "description": "Выступление"
+  },
+  "Persuasion": {
+    "ability": "charisma",
+    "description": "Убеждение"
+  },
+  "Religion": {
+    "ability": "intelligence",
+    "description": "Религия"
+  },
+  "Sleight of Hand": {
+    "ability": "dexterity",
+    "description": "Ловкость рук"
+  },
+  "Stealth": {
+    "ability": "dexterity",
+    "description": "Скрытность"
+  },
+  "Survival": {
+    "ability": "wisdom",
+    "description": "Выживание"
+  }
+}

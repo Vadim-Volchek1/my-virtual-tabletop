@@ -1,0 +1,40 @@
+{
+  "human": {
+    "name": "Человек",
+    "ability_bonuses": {
+      "strength": 1,
+      "dexterity": 1,
+      "constitution": 1,
+      "intelligence": 1,
+      "wisdom": 1,
+      "charisma": 1
+    },
+    "speed": 30,
+    "features": [
+      "Универсальная обучаемость"
+    ]
+  },
+  "elf": {
+    "name": "Эльф",
+    "ability_bonuses": {
+      "dexterity": 2
+    },
+    "speed": 30,
+    "features": [
+      "Тёмное зрение",
+      "Острослышание",
+      "Транс"
+    ]
+  },
+  "dwarf": {
+    "name": "Дварф",
+    "ability_bonuses": {
+      "constitution": 2
+    },
+    "speed": 25,
+    "features": [
+      "Тёмное зрение",
+      "Стойкость дварфов"
+    ]
+  }
+}

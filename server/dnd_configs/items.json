@@ -1,0 +1,23 @@
+{
+  "Longsword": {
+    "type": "weapon",
+    "cost": "15 gp",
+    "weight": 3,
+    "damage": "1d8 slashing",
+    "properties": [
+      "Versatile (1d10)"
+    ]
+  },
+  "Leather Armor": {
+    "type": "armor",
+    "cost": "10 gp",
+    "weight": 10,
+    "armor_class": 11
+  },
+  "Healing Potion": {
+    "type": "potion",
+    "cost": "50 gp",
+    "weight": 0.5,
+    "description": "Восстанавливает 2d4+2 хитов"
+  }
+}

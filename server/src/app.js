@@ -5,6 +5,7 @@ import morgan from 'morgan';
 import authRoutes from './routes/auth.js';
 import healthRoutes from './routes/health.js';
 import sessionRoutes from './routes/sessions.js';
+import profileRoutes from './routes/profile.js';
 
 export const createApp = (io) => {
   const app = express();
@@ -26,6 +27,9 @@ export const createApp = (io) => {
   app.use('/api/auth', authRoutes);
   app.use('/api/health', healthRoutes);
   app.use('/api/sessions', sessionRoutes);
+  app.use('/api/profile', profileRoutes);
+  app.use('/api/characters', characterRoutes);
+  app.use('/api/configs', configRoutes);
 
   // Ошибки
   app.use((err, req, res, next) => {

@@ -16,10 +16,12 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react';
 import { useAuth } from '../contexts/AuthContext';
-import { FaDiceD20, FaUsers, FaUser, FaSignOutAlt } from 'react-icons/fa';
+import { FaDiceD20, FaUsers, FaUser } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom'; // 👈 обязательно добавить
 
 const Index = () => {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
+  const navigate = useNavigate(); // 👈 создаём navigate
   const bg = useColorModeValue('gray.50', 'gray.800');
   const cardBg = useColorModeValue('white', 'gray.700');
   const accent = useColorModeValue('teal.500', 'teal.300');
@@ -40,6 +42,7 @@ const Index = () => {
         <Divider />
 
         <SimpleGrid columns={{ base: 1, md: 3 }} spacing={6}>
+          {/* Карточка персонажей */}
           <Card bg={cardBg} shadow="lg" borderRadius="2xl" _hover={{ transform: 'scale(1.03)' }} transition="0.2s">
             <CardHeader>
               <HStack spacing={3}>
@@ -57,6 +60,7 @@ const Index = () => {
             </CardFooter>
           </Card>
 
+          {/* Карточка сессий */}
           <Card bg={cardBg} shadow="lg" borderRadius="2xl" _hover={{ transform: 'scale(1.03)' }} transition="0.2s">
             <CardHeader>
               <HStack spacing={3}>
@@ -74,6 +78,7 @@ const Index = () => {
             </CardFooter>
           </Card>
 
+          {/* Карточка профиля */}
           <Card bg={cardBg} shadow="lg" borderRadius="2xl" _hover={{ transform: 'scale(1.03)' }} transition="0.2s">
             <CardHeader>
               <HStack spacing={3}>
@@ -85,14 +90,17 @@ const Index = () => {
               <Text color="gray.500">Измените информацию аккаунта или обновите аватар.</Text>
             </CardBody>
             <CardFooter>
-              <Button colorScheme="teal" w="full" variant="solid">
+              <Button
+                colorScheme="teal"
+                w="full"
+                variant="solid"
+                onClick={() => navigate('/profile')} // 👈 теперь работает
+              >
                 Редактировать профиль
               </Button>
             </CardFooter>
           </Card>
         </SimpleGrid>
-
-        <Divider />
       </VStack>
     </Box>
   );

@@ -1,0 +1,36 @@
+{
+  "fighter": {
+    "name": "Воин",
+    "hit_die": 10,
+    "primary_ability": [
+      "strength",
+      "dexterity"
+    ],
+    "saving_throws": [
+      "strength",
+      "constitution"
+    ]
+  },
+  "wizard": {
+    "name": "Волшебник",
+    "hit_die": 6,
+    "primary_ability": [
+      "intelligence"
+    ],
+    "saving_throws": [
+      "intelligence",
+      "wisdom"
+    ]
+  },
+  "rogue": {
+    "name": "Плут",
+    "hit_die": 8,
+    "primary_ability": [
+      "dexterity"
+    ],
+    "saving_throws": [
+      "dexterity",
+      "intelligence"
+    ]
+  }
+}
