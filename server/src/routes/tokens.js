@@ -4,8 +4,7 @@ import {
   createToken, 
   updateToken, 
   deleteToken 
-} 
-from '../controllers/tokenControllers.js';
+} from '../controllers/tokenControllers.js';
 import { authenticateToken } from '../middleware/authMiddleware.js';
 
 const router = express.Router();

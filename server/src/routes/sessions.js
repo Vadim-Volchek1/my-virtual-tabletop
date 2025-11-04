@@ -5,13 +5,13 @@ import {
   getSession, 
   joinSession 
 } from '../controllers/sessionController.js';
-import { authenticateToken } from '../middleware/authMiddleware.js';
+import { protect } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-router.get('/', authenticateToken, getSessions);
-router.post('/', authenticateToken, createSession);
-router.get('/:id', authenticateToken, getSession);
-router.post('/:id/join', authenticateToken, joinSession);
+router.get('/', protect, getSessions);
+router.post('/', protect, createSession);
+router.get('/:id', protect, getSession);
+router.post('/:id/join', protect, joinSession);
 
 export default router;

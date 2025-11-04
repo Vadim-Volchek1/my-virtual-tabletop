@@ -1,9 +1,12 @@
-import { Token } from '../models/index.js';
+import { dbHelpers } from '../config/database.js';
 
+// 🎲 Получить все токены
 export const getTokens = async (req, res) => {
   try {
-    const tokens = await Token.find({ sessionId: req.params.sessionId })
-      .populate('ownerId', 'username');
+    const tokens = await dbHelpers.all(
+      'SELECT * FROM tokens WHERE session_id = ?',
+      [req.params.sessionId]
+    );
     res.json(tokens);
   } catch (error) {
     console.error('Get tokens error:', error);
@@ -11,57 +14,37 @@ export const getTokens = async (req, res) => {
   }
 };
 
+// ➕ Создать токен
 export const createToken = async (req, res) => {
   try {
-    const { name, imageUrl, width, height, x, y } = req.body;
-    
-    if (!name || !imageUrl) {
-      return res.status(400).json({ error: 'Название и изображение обязательны' });
-    }
+    const { name, imageUrl, x, y } = req.body;
+    if (!name || !imageUrl) return res.status(400).json({ error: 'Название и изображение обязательны' });
 
-    const token = await Token.create({
-      name,
-      imageUrl,
-      width: width || 50,
-      height: height || 50,
-      x: x || 0,
-      y: y || 0,
-      sessionId: req.params.sessionId,
-      ownerId: req.user.userId
-    });
+    const result = await dbHelpers.run(
+      'INSERT INTO tokens (session_id, name, image_url, x, y) VALUES (?, ?, ?, ?, ?)',
+      [req.params.sessionId, name, imageUrl, x || 0, y || 0]
+    );
 
-    const populatedToken = await Token.findById(token._id)
-      .populate('ownerId', 'username');
+    const token = await dbHelpers.get('SELECT * FROM tokens WHERE id = ?', [result.id]);
+    if (req.io) req.io.to(req.params.sessionId).emit('token-created', token);
 
-    // Emit socket event
-    if (req.io) {
-      req.io.to(req.params.sessionId).emit('token-created', populatedToken);
-    }
-
-    res.status(201).json(populatedToken);
+    res.status(201).json(token);
   } catch (error) {
     console.error('Create token error:', error);
     res.status(500).json({ error: 'Ошибка создания токена' });
   }
 };
 
+// 🔄 Обновить токен
 export const updateToken = async (req, res) => {
   try {
-    const token = await Token.findByIdAndUpdate(
-      req.params.tokenId,
-      req.body,
-      { new: true }
-    ).populate('ownerId', 'username');
+    const { x, y } = req.body;
+    await dbHelpers.run('UPDATE tokens SET x = ?, y = ? WHERE id = ?', [x, y, req.params.tokenId]);
 
-    if (!token) {
-      return res.status(404).json({ error: 'Токен не найден' });
-    }
+    const token = await dbHelpers.get('SELECT * FROM tokens WHERE id = ?', [req.params.tokenId]);
+    if (!token) return res.status(404).json({ error: 'Токен не найден' });
 
-    // Emit socket event
-    if (req.io) {
-      req.io.to(token.sessionId.toString()).emit('token-updated', token);
-    }
-
+    if (req.io) req.io.to(token.session_id.toString()).emit('token-updated', token);
     res.json(token);
   } catch (error) {
     console.error('Update token error:', error);
@@ -69,19 +52,15 @@ export const updateToken = async (req, res) => {
   }
 };
 
+// ❌ Удалить токен
 export const deleteToken = async (req, res) => {
   try {
-    const token = await Token.findByIdAndDelete(req.params.tokenId);
-    
-    if (!token) {
-      return res.status(404).json({ error: 'Токен не найден' });
-    }
+    const token = await dbHelpers.get('SELECT * FROM tokens WHERE id = ?', [req.params.tokenId]);
+    if (!token) return res.status(404).json({ error: 'Токен не найден' });
 
-    // Emit socket event
-    if (req.io) {
-      req.io.to(token.sessionId.toString()).emit('token-deleted', token._id);
-    }
+    await dbHelpers.run('DELETE FROM tokens WHERE id = ?', [req.params.tokenId]);
 
+    if (req.io) req.io.to(token.session_id.toString()).emit('token-deleted', token.id);
     res.json({ message: 'Токен удален' });
   } catch (error) {
     console.error('Delete token error:', error);

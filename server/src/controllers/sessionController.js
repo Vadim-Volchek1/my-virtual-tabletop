@@ -1,10 +1,14 @@
-import { GameSession } from '../models/index.js';
+import { dbHelpers } from '../config/database.js';
 
+// 🧩 Получить все сессии
 export const getSessions = async (req, res) => {
   try {
-    const sessions = await GameSession.find()
-      .populate('creatorId', 'username avatar')
-      .populate('players.userId', 'username avatar');
+    const sessions = await dbHelpers.all(
+      `SELECT s.*, u.username AS creator_name
+       FROM sessions s
+       JOIN users u ON s.creator_id = u.id
+       ORDER BY s.created_at DESC`
+    );
     res.json(sessions);
   } catch (error) {
     console.error('Get sessions error:', error);
@@ -12,86 +16,77 @@ export const getSessions = async (req, res) => {
   }
 };
 
+// ➕ Создать новую сессию
 export const createSession = async (req, res) => {
   try {
-    const { name, description, gameSystem, isPublic, password, maxPlayers } = req.body;
-    
-    if (!name) {
-      return res.status(400).json({ error: 'Название сессии обязательно' });
-    }
+    const { name } = req.body;
+    if (!name) return res.status(400).json({ error: 'Название сессии обязательно' });
 
-    const session = await GameSession.create({
-      name,
-      description,
-      gameSystem,
-      isPublic,
-      password,
-      maxPlayers,
-      creatorId: req.user.userId,
-      players: [{
-        userId: req.user.userId,
-        role: 'gm'
-      }]
-    });
+    const result = await dbHelpers.run(
+      'INSERT INTO sessions (name, creator_id) VALUES (?, ?)',
+      [name, req.user.id]
+    );
 
-    const populatedSession = await GameSession.findById(session._id)
-      .populate('creatorId', 'username avatar')
-      .populate('players.userId', 'username avatar');
+    const session = await dbHelpers.get(
+      `SELECT s.*, u.username AS creator_name
+       FROM sessions s
+       JOIN users u ON s.creator_id = u.id
+       WHERE s.id = ?`,
+      [result.id]
+    );
 
-    res.status(201).json(populatedSession);
+    res.status(201).json(session);
   } catch (error) {
     console.error('Create session error:', error);
     res.status(500).json({ error: 'Ошибка создания сессии' });
   }
 };
 
+// 🔍 Получить конкретную сессию
 export const getSession = async (req, res) => {
   try {
-    const session = await GameSession.findById(req.params.id)
-      .populate('creatorId', 'username avatar')
-      .populate('players.userId', 'username avatar');
-    
-    if (!session) {
-      return res.status(404).json({ error: 'Сессия не найдена' });
-    }
-
+    const session = await dbHelpers.get(
+      `SELECT s.*, u.username AS creator_name
+       FROM sessions s
+       JOIN users u ON s.creator_id = u.id
+       WHERE s.id = ?`,
+      [req.params.id]
+    );
+    if (!session) return res.status(404).json({ error: 'Сессия не найдена' });
     res.json(session);
   } catch (error) {
     console.error('Get session error:', error);
     res.status(500).json({ error: 'Ошибка загрузки сессии' });
   }
 };
-
 export const joinSession = async (req, res) => {
   try {
-    const session = await GameSession.findById(req.params.id);
-    
+    const sessionId = req.params.id;
+    const userId = req.user.id;
+
+    // Проверяем, существует ли сессия
+    const session = await dbHelpers.get('SELECT * FROM sessions WHERE id = ?', [sessionId]);
     if (!session) {
       return res.status(404).json({ error: 'Сессия не найдена' });
     }
 
-    // Check if session is full
-    if (session.players.length >= session.maxPlayers) {
-      return res.status(400).json({ error: 'Сессия заполнена' });
-    }
-
-    const alreadyJoined = session.players.some(
-      player => player.userId.toString() === req.user.userId
+    // Проверяем, есть ли пользователь уже в списке игроков
+    const playerExists = await dbHelpers.get(
+      'SELECT * FROM session_players WHERE session_id = ? AND user_id = ?',
+      [sessionId, userId]
     );
 
-    if (!alreadyJoined) {
-      session.players.push({
-        userId: req.user.userId,
-        role: 'player'
-      });
-      await session.save();
+    if (playerExists) {
+      return res.status(400).json({ error: 'Вы уже участвуете в этой сессии' });
     }
 
-    const populatedSession = await GameSession.findById(session._id)
-      .populate('creatorId', 'username avatar')
-      .populate('players.userId', 'username avatar');
+    // Добавляем пользователя в сессию
+    await dbHelpers.run(
+      'INSERT INTO session_players (session_id, user_id, role) VALUES (?, ?, ?)',
+      [sessionId, userId, 'player']
+    );
 
-    res.json(populatedSession);
+    res.json({ message: 'Вы успешно присоединились к сессии' });
   } catch (error) {
     console.error('Join session error:', error);
     res.status(500).json({ error: 'Ошибка присоединения к сессии' });

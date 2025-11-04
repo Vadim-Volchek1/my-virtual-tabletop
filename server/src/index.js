@@ -2,7 +2,8 @@ import { createServer } from 'http';
 import { initializeDatabase } from './config/database.js';
 import { setupSocketIO } from './config/socket.js';
 import { createApp } from './app.js';
-
+import dotenv from 'dotenv';
+dotenv.config();
 const PORT = process.env.PORT || 5000;
 
 async function startServer() {
