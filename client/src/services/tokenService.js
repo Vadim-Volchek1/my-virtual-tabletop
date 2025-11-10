@@ -1,4 +1,4 @@
-import { sessionsAPI } from './api';
+import { sessionsAPI } from './api/index';
 
 export const tokenAPI = {
   getTokens: (sessionId) => sessionsAPI.get(`/${sessionId}/tokens`),

@@ -1,0 +1,2 @@
+                <Route path="/characters/:characterId" element={<ListCharacter />} />
+                                <Route path="/characters" element={<Characters />} />

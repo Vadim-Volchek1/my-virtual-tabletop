@@ -4,10 +4,34 @@ import { getProfile, updateProfile } from '../controllers/profileController.js';
 
 const router = express.Router();
 
-// Получить профиль текущего пользователя
-router.get('/me', protect, getProfile);
+console.log('🧭 [ROUTER] Profile router загружен');
 
-// Обновить профиль текущего пользователя
-router.put('/me', protect, updateProfile);
+router.get(
+  '/me',
+  (req, res, next) => {
+    console.log('🛣 [ROUTER] /me route сработал — перед вызовом protect');
+    next();
+  },
+  protect,
+  (req, res, next) => {
+    console.log('🛡 [ROUTER] protect прошёл — перед getProfile');
+    next();
+  },
+  getProfile
+);
+
+router.put(
+  '/me',
+  (req, res, next) => {
+    console.log('🛠 [ROUTER] PUT /me route сработал — перед protect');
+    next();
+  },
+  protect,
+  (req, res, next) => {
+    console.log('🛡 [ROUTER] protect прошёл — перед updateProfile');
+    next();
+  },
+  updateProfile
+);
 
 export default router;

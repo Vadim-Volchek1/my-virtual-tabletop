@@ -5,7 +5,7 @@
     "@chakra-ui/icons": "^2.2.4",
     "@chakra-ui/react": "^2.10.9",
     "@use-gesture/react": "^10.3.1",
-    "axios": "^1.12.2",
+    "axios": "^1.13.2",
     "fabric": "^6.7.1",
     "konva": "^10.0.2",
     "react": "^19.2.0",

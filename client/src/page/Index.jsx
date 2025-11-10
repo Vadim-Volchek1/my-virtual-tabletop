@@ -17,11 +17,11 @@ import {
 } from '@chakra-ui/react';
 import { useAuth } from '../contexts/AuthContext';
 import { FaDiceD20, FaUsers, FaUser } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom'; // 👈 обязательно добавить
+import { useNavigate } from 'react-router-dom';
 
 const Index = () => {
   const { user } = useAuth();
-  const navigate = useNavigate(); // 👈 создаём navigate
+  const navigate = useNavigate();
   const bg = useColorModeValue('gray.50', 'gray.800');
   const cardBg = useColorModeValue('white', 'gray.700');
   const accent = useColorModeValue('teal.500', 'teal.300');
@@ -54,7 +54,12 @@ const Index = () => {
               <Text color="gray.500">Просматривайте, редактируйте и создавайте новых героев.</Text>
             </CardBody>
             <CardFooter>
-              <Button colorScheme="teal" w="full" variant="solid">
+              <Button 
+                colorScheme="teal"
+                w="full"
+                variant="solid"
+                onClick={() => navigate('/characters')} // 👈 теперь работает
+                >
                 Открыть персонажей
               </Button>
             </CardFooter>

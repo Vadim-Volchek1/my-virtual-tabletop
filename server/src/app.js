@@ -6,6 +6,8 @@ import authRoutes from './routes/auth.js';
 import healthRoutes from './routes/health.js';
 import sessionRoutes from './routes/sessions.js';
 import profileRoutes from './routes/profile.js';
+import characterRoutes from './routes/characters.js';
+import configRoutes from './routes/configs.js';
 
 export const createApp = (io) => {
   const app = express();
@@ -30,7 +32,6 @@ export const createApp = (io) => {
   app.use('/api/profile', profileRoutes);
   app.use('/api/characters', characterRoutes);
   app.use('/api/configs', configRoutes);
-
   // Ошибки
   app.use((err, req, res, next) => {
     console.error(err);
